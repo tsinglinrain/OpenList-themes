@@ -206,6 +206,32 @@ const debugConfig = {
 };
 ```
 
+### Q: 能看到 DOM 元素但内容不显示？
+
+**症状**：
+- 测试版本正常显示
+- 正式版本内容不显示
+- F12 开发者工具中能看到 `<div id="openlist-theme">` 元素
+
+**解决方案**：
+
+1. **使用简化版本（推荐）**：
+   ```html
+   <!-- 无延迟加载的简化版本 -->
+   fetch('https://cdn.jsdelivr.net/gh/your-username/OpenList-themes@main/themes/content-simple.html')
+   ```
+
+2. **检查控制台日志**：
+   - 按 F12 查看 Console
+   - 寻找 "OpenList主题脚本开始执行" 等日志信息
+   - 如果看到 "强制显示完成" 说明延迟加载有问题
+
+3. **手动触发显示**：
+   在浏览器控制台执行：
+   ```javascript
+   document.querySelector("#customize").style.display = "";
+   ```
+
 ### Q: 音乐播放器不显示？
 A: 检查 `MUSIC_SERVER` 和 `PLAYLIST_ID` 是否正确，确认播放列表为公开状态。
 
