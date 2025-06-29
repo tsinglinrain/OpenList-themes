@@ -104,12 +104,37 @@
 </div>
 <!--延迟加载配套使用JS-->
 <script>
+    // 更可靠的延迟加载机制
+    function showCustomizeContent() {
+        const customizeDiv = document.querySelector("#customize");
+        if (customizeDiv) {
+            customizeDiv.style.display = "";
+            console.log("OpenList主题内容已显示");
+        }
+    }
+
+    // 多种触发条件，确保内容能够显示
     let interval = setInterval(() => {
-        if (document.querySelector(".footer")) {
-            document.querySelector("#customize").style.display = "";
+        // 检查页面是否已经加载完成
+        if (document.readyState === 'complete' || 
+            document.querySelector(".footer") || 
+            document.querySelector(".hope-ui-light") || 
+            document.querySelector(".hope-ui-dark") ||
+            document.querySelector("main")) {
+            showCustomizeContent();
             clearInterval(interval);
         }
-    }, 200);
+    }, 100);
+
+    // 备用触发机制
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(showCustomizeContent, 1000);
+    });
+
+    // 窗口加载完成后的备用触发
+    window.addEventListener('load', function() {
+        setTimeout(showCustomizeContent, 500);
+    });
 
     function removelrc() {
         //检测是否存在歌词按钮
@@ -123,7 +148,7 @@
                 //以触发按钮的方式隐藏歌词，防止在点击显示歌词按钮时需要点击两次才能出现的问题
                 document.querySelector(".aplayer-icon-lrc").click();
             }, 1);
-            console.log("success");
+            console.log("音乐播放器歌词已隐藏");
             return;
         }
     }

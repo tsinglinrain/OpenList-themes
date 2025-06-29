@@ -156,6 +156,56 @@ GISCUS_CATEGORY_ID: "your-category-id"
 - **v1.1.0** - 添加变量模板化支持
 - **v1.2.0** - 优化 CDN 使用方式
 
+## 常见问题与调试
+
+### Q: 背景图片显示正常，但音乐播放器、评论等内容不显示？
+
+**可能原因和解决方案：**
+
+1. **使用测试版本调试**：
+   ```html
+   <!-- 先使用测试版本确认问题 -->
+   fetch('https://cdn.jsdelivr.net/gh/your-username/OpenList-themes@main/themes/content-test.html')
+   ```
+
+2. **检查浏览器控制台**：
+   - 按 F12 打开开发者工具
+   - 查看 Console 选项卡中的错误信息
+   - 查找 "OpenList主题内容已显示" 的日志
+
+3. **检查变量替换**：
+   确保所有 `{{变量名}}` 都被正确替换，没有遗漏的大括号
+
+4. **检查依赖资源**：
+   - APlayer 和 MetingJS 是否正确加载
+   - 网络是否能访问 CDN 资源
+
+**调试用配置示例：**
+```javascript
+const debugConfig = {
+    DOMAIN: 'your-domain.com',
+    MUSIC_SERVER: 'netease',
+    PLAYLIST_ID: '697173945',
+    EMAIL: 'test@example.com',
+    BLOG_URL: 'https://example.com',
+    CLOUD_URL: 'https://example.com',
+    DEFAULT_QUOTE: '测试一言',
+    QUOTE_AUTHOR: '测试',
+    ICP_RECORD: '测试备案号',
+    // Giscus 配置
+    GISCUS_REPO: 'your-username/your-repo',
+    GISCUS_REPO_ID: 'R_kgDOxxxxxxx',
+    GISCUS_CATEGORY: 'General',
+    GISCUS_CATEGORY_ID: 'DIC_kwDOxxxxxxx'
+};
+```
+
+### Q: 音乐播放器不显示？
+A: 检查 `MUSIC_SERVER` 和 `PLAYLIST_ID` 是否正确，确认播放列表为公开状态。
+
+### Q: 评论系统不显示？
+A: 检查 Giscus 配置是否正确，仓库是否为公开状态并启用了 Discussions。
+
 ## 贡献
 
 欢迎提交 Issue 和 Pull Request！
