@@ -37,6 +37,19 @@
 <!-- require MetingJS -->
 <script src="https://npm.elemecdn.com/meting2@0.0.1/js/Meting.min.js"></script>
 
+<!-- 备用 MetingJS CDN -->
+<script>
+// 检查 MetingJS 是否加载成功，如果失败则使用备用 CDN
+setTimeout(() => {
+    if (typeof MetingJSElement === 'undefined' && !customElements.get('meting-js')) {
+        console.log('主 MetingJS 加载失败，尝试备用 CDN');
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js';
+        document.head.appendChild(script);
+    }
+}, 2000);
+</script>
+
 <!-- 个人部分设置 -->
 <!--防止被他人反代-->
 <script type="text/javascript">  

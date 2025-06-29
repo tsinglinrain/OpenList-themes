@@ -3,13 +3,21 @@
 
 <div id="openlist-theme-simple" style="max-width: 100%; margin: 0 auto; padding: 0;">
 	<!--音乐播放器-->
-    <meting-js list-folded="true" server="{{MUSIC_SERVER}}" type="playlist" id="{{PLAYLIST_ID}}" fixed=true>
-        <pre hidden>
-            [00:00.00]This
-            [00:04.01]is
-            [00:08.02]Waite
-        </pre>
-    </meting-js>
+    <div style="margin: 10px 0;">
+        <meting-js 
+            list-folded="true" 
+            server="{{MUSIC_SERVER}}" 
+            type="playlist" 
+            id="{{PLAYLIST_ID}}" 
+            fixed="true"
+            style="max-width: 100%;">
+            <pre hidden>
+                [00:00.00]This
+                [00:04.01]is
+                [00:08.02]Waite
+            </pre>
+        </meting-js>
+    </div>
 
     <br />
     <center class="dibu">
@@ -99,6 +107,73 @@
 
 <script>
 console.log("OpenList主题简化版本加载完成");
+
+// 等待依赖加载后初始化
+function initializeComponents() {
+    console.log("开始初始化组件");
+    
+    // 检查并初始化音乐播放器
+    setTimeout(() => {
+        const metingElements = document.querySelectorAll('meting-js');
+        console.log(`找到 ${metingElements.length} 个 meting-js 元素`);
+        
+        metingElements.forEach((el, index) => {
+            console.log(`MetingJS 元素 ${index}:`, {
+                server: el.getAttribute('server'),
+                type: el.getAttribute('type'),
+                id: el.getAttribute('id'),
+                hasAPlayer: el.querySelector('.aplayer') !== null
+            });
+            
+            // 如果没有播放器界面，尝试触发重新渲染
+            if (!el.querySelector('.aplayer')) {
+                console.log(`重新初始化 MetingJS 元素 ${index}`);
+                // 强制重新渲染
+                const server = el.getAttribute('server');
+                el.setAttribute('server', 'temp');
+                setTimeout(() => {
+                    el.setAttribute('server', server);
+                }, 100);
+            }
+        });
+        
+        // 检查 APlayer 和 MetingJS 的加载状态
+        console.log('依赖状态检查:', {
+            APlayer: typeof APlayer !== 'undefined',
+            MetingJSElement: typeof MetingJSElement !== 'undefined',
+            customElements: customElements.get('meting-js') !== undefined
+        });
+    }, 2000);
+    
+    // 检查 Giscus 评论系统
+    setTimeout(() => {
+        const giscusDiv = document.getElementById('giscus');
+        if (giscusDiv) {
+            const hasGiscusContent = giscusDiv.children.length > 0;
+            console.log('Giscus 状态:', {
+                element: !!giscusDiv,
+                hasContent: hasGiscusContent,
+                innerHTML: giscusDiv.innerHTML.length > 20 ? '有内容' : '空或很少内容'
+            });
+            
+            if (!hasGiscusContent) {
+                console.log('⚠️ Giscus 评论系统未正确加载');
+                giscusDiv.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">评论系统加载中，请稍候...</div>';
+            }
+        }
+    }, 3000);
+}
+
+// 立即开始初始化
+initializeComponents();
+
+// DOM 加载完成后再次初始化
+document.addEventListener('DOMContentLoaded', initializeComponents);
+
+// 窗口加载完成后再次初始化
+window.addEventListener('load', () => {
+    setTimeout(initializeComponents, 1000);
+});
 
 function removelrc() {
     //检测是否存在歌词按钮

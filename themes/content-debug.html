@@ -1,0 +1,235 @@
+<!-- OpenList 主题 - 诊断版本 -->
+<div id="openlist-theme-debug" style="max-width: 100%; margin: 0 auto; padding: 0;">
+    
+    <!-- 依赖检查状态显示 -->
+    <div id="debug-status" style="background: #f0f8ff; border: 1px solid #409EFF; padding: 10px; margin: 10px 0; font-size: 12px;">
+        <h4 style="color: #409EFF; margin: 0 0 10px 0;">🔧 OpenList 主题诊断</h4>
+        <div id="aplayer-status">🔄 检查 APlayer...</div>
+        <div id="meting-status">🔄 检查 MetingJS...</div>
+        <div id="giscus-status">🔄 检查 Giscus...</div>
+        <div id="busuanzi-status">🔄 检查不蒜子统计...</div>
+    </div>
+
+	<!--音乐播放器-->
+    <div style="margin: 10px 0; padding: 10px; border: 1px dashed #ccc;">
+        <h4>音乐播放器测试：</h4>
+        <meting-js 
+            list-folded="true" 
+            server="{{MUSIC_SERVER}}" 
+            type="playlist" 
+            id="{{PLAYLIST_ID}}" 
+            fixed="false"
+            style="max-width: 100%;">
+            <pre hidden>
+                [00:00.00]This
+                [00:04.01]is
+                [00:08.02]Waite
+            </pre>
+        </meting-js>
+        <div id="meting-debug" style="margin-top: 5px; font-size: 11px; color: #666;"></div>
+    </div>
+
+    <br />
+    <center class="dibu">
+        <div style="line-height: 20px;font-size: 9pt;font-weight: bold; max-width: 100%;">
+            <span>
+                "
+                <span style="color: rgb(13, 109, 252); font-weight: bold;" id="hitokoto">
+                    <a href="#" id="hitokoto_text">
+                        "{{DEFAULT_QUOTE}}"
+                    </a>
+                </span> "
+            </span>
+            <p style="margin-left: 10rem;font-size: 8pt;">
+                <small>
+                    —— {{QUOTE_AUTHOR}}
+                </small>
+            </p>
+        </div>
+
+        <div style="font-size: 13px; font-weight: bold; max-width: 100%; word-wrap: break-word;">
+            
+            <span class="nav-item">
+                <a class="nav-link" href="mailto:{{EMAIL}}" target="_blank">
+                    <i class="fa-duotone fa-envelope-open" style="color:#409EFF" aria-hidden="true">
+                    </i>
+                    邮箱 |
+                </a>
+            </span>
+            <span class="nav-item">
+                <a class="nav-link" href="{{BLOG_URL}}" target="_blank">
+                    <i class="fas fa-edit" style="color:#409EFF" aria-hidden="true">
+                    </i>
+                    博客 |
+                </a>
+            </span>
+            
+            <span class="nav-item">
+                <a class="nav-link" href="{{CLOUD_URL}}" target="_blank">
+                    <i class="fa fa-cloud-download" style="color:#409EFF;" aria-hidden="true">
+                    </i>
+                    云盘 |
+                </a>
+            </span>
+            <!--后台入口-->
+            <span class="nav-item">
+                <a class="nav-link" href="/@manage" target="_blank">
+                    <i class="fa-solid fa-folder-gear" style="color:#409EFF;" aria-hidden="true">
+                    </i>
+                    管理 |
+                </a>
+            </span>
+            <!--版权，请尊重作者-->
+            <span class="nav-item">
+                <a class="nav-link" href="https://github.com/OpenListTeam/OpenList" target="_blank">
+                    <i class="fa-solid fa-copyright" style="color:#409EFF;" aria-hidden="true">
+                    </i>
+                    Openlist
+                </a>
+            </span>
+            <br />
+            <!--添加一个访问量-->
+            <span style="word-wrap: break-word; max-width: 100%; display: inline-block;">
+                本"<span style="color: rgb(13, 109, 252); font-weight: bold;"><a href="#">目录</a></span>"访问量 <span id="busuanzi_value_page_pv" style="color: rgb(13, 109, 252); font-weight: bold;">0</span> 次 本站总访问量 <span id="busuanzi_value_site_pv" style="color: rgb(13, 109, 252); font-weight: bold;">0</span> 次 本站总访客数 <span id="busuanzi_value_site_uv" style="color: rgb(13, 109, 252); font-weight: bold;">0</span> 人
+            </span>
+            <br />
+            <!--添加备案信息-->
+            <span class="nav-item">
+                <a class="nav-link" href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank">
+                    <i class="fa-solid fa-shield-check" style="color:#409EFF;" aria-hidden="true">
+                    </i>
+                    {{ICP_RECORD}}
+                </a>
+            </span>
+        </div>
+    </center>
+    <br />
+
+    <!--评论模块-->
+    <div style="margin: 10px 0; padding: 10px; border: 1px dashed #ccc;">
+        <h4>评论系统测试：</h4>
+        <div style="font-size: 12px; margin-bottom: 10px;">
+            <div>仓库: <code>{{GISCUS_REPO}}</code></div>
+            <div>仓库ID: <code>{{GISCUS_REPO_ID}}</code></div>
+            <div>分类: <code>{{GISCUS_CATEGORY}}</code></div>
+            <div>分类ID: <code>{{GISCUS_CATEGORY_ID}}</code></div>
+        </div>
+        <center>
+            <div class="giscus" id="giscus" style="max-width: 100%; box-sizing: border-box; min-height: 100px; border: 1px solid #eee; padding: 10px;">
+                <div style="text-align: center; color: #666; padding: 20px;">
+                    评论系统加载中...
+                </div>
+            </div>
+        </center>
+    </div>
+</div>
+
+<!--一言API-->
+<script src="https://v1.hitokoto.cn/?encode=js&select=%23hitokoto" defer></script>
+
+<script>
+console.log("🔧 OpenList主题诊断版本开始加载");
+
+// 诊断函数
+function updateStatus(elementId, status, message) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.innerHTML = `${status} ${message}`;
+    }
+}
+
+// 检查依赖
+function checkDependencies() {
+    // 检查 APlayer
+    if (typeof APlayer !== 'undefined') {
+        updateStatus('aplayer-status', '✅', 'APlayer 已加载');
+        console.log('✅ APlayer 可用');
+    } else {
+        updateStatus('aplayer-status', '❌', 'APlayer 未加载');
+        console.log('❌ APlayer 不可用');
+    }
+
+    // 检查 MetingJS
+    if (typeof MetingJSElement !== 'undefined' || document.querySelector('meting-js')) {
+        const metingElements = document.querySelectorAll('meting-js');
+        updateStatus('meting-status', '✅', `MetingJS 已加载 (找到 ${metingElements.length} 个元素)`);
+        console.log('✅ MetingJS 可用', metingElements);
+        
+        // 检查 meting-js 元素的状态
+        metingElements.forEach((el, index) => {
+            console.log(`MetingJS 元素 ${index}:`, {
+                server: el.getAttribute('server'),
+                type: el.getAttribute('type'),
+                id: el.getAttribute('id'),
+                hasPlayer: el.querySelector('.aplayer') !== null
+            });
+        });
+    } else {
+        updateStatus('meting-status', '❌', 'MetingJS 未加载');
+        console.log('❌ MetingJS 不可用');
+    }
+
+    // 检查 Giscus
+    const giscusScript = document.querySelector('script[src*="giscus"]');
+    if (giscusScript) {
+        updateStatus('giscus-status', '✅', 'Giscus 脚本已加载');
+        console.log('✅ Giscus 脚本存在');
+        
+        // 检查 Giscus 配置
+        console.log('Giscus 配置:', {
+            repo: giscusScript.getAttribute('data-repo'),
+            repoId: giscusScript.getAttribute('data-repo-id'),
+            category: giscusScript.getAttribute('data-category'),
+            categoryId: giscusScript.getAttribute('data-category-id')
+        });
+    } else {
+        updateStatus('giscus-status', '❌', 'Giscus 脚本未找到');
+        console.log('❌ Giscus 脚本不存在');
+    }
+
+    // 检查不蒜子
+    const pvElement = document.getElementById('busuanzi_value_page_pv');
+    if (pvElement && pvElement.textContent !== '0') {
+        updateStatus('busuanzi-status', '✅', '不蒜子统计正常');
+    } else {
+        updateStatus('busuanzi-status', '⚠️', '不蒜子统计未加载或为0');
+    }
+}
+
+// 立即检查一次
+setTimeout(checkDependencies, 1000);
+
+// 2秒后再检查一次
+setTimeout(checkDependencies, 2000);
+
+// 5秒后最后检查一次
+setTimeout(() => {
+    checkDependencies();
+    console.log('🔧 诊断完成');
+    
+    // 如果音乐播放器还是没有内容，尝试手动初始化
+    const metingElements = document.querySelectorAll('meting-js');
+    metingElements.forEach((el, index) => {
+        if (!el.querySelector('.aplayer')) {
+            console.log(`尝试手动初始化 MetingJS 元素 ${index}`);
+            // 触发自定义事件或重新设置属性
+            el.setAttribute('data-debug', 'true');
+        }
+    });
+}, 5000);
+
+function removelrc() {
+    if (!document.querySelector(".aplayer-icon-lrc"))
+        return;
+    else {
+        document.removeEventListener("DOMNodeInserted", removelrc);
+        setTimeout(function () {
+            document.querySelector(".aplayer-icon-lrc").click();
+        }, 1);
+        console.log("音乐播放器歌词已隐藏");
+        return;
+    }
+}
+
+document.addEventListener('DOMNodeInserted', removelrc)
+</script>
