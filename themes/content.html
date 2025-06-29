@@ -2,7 +2,7 @@
 <!--延迟加载-->
 <!--如果要写自定义内容建议都加到这个延迟加载的范围内-->
 <div id="customize" style="display: none;">
-    <div>
+    <div style="max-width: 100%; margin: 0 auto; padding: 0;">
 		<!--音乐播放器-->
         <meting-js list-folded="true" server="{{MUSIC_SERVER}}" type="playlist" id="{{PLAYLIST_ID}}" fixed=true>
             <pre hidden>
@@ -12,10 +12,9 @@
             </pre>
         </meting-js>
 
-
         <br />
         <center class="dibu">
-            <div style=" line-height: 20px;font-size: 9pt;font-weight: bold;">
+            <div style="line-height: 20px;font-size: 9pt;font-weight: bold; max-width: 100%;">
                 <span>
                     "
                     <span style="color: rgb(13, 109, 252); font-weight: bold;" id="hitokoto">
@@ -31,7 +30,7 @@
                 </p>
             </div>
 
-            <div style="font-size: 13px; font-weight: bold;">
+            <div style="font-size: 13px; font-weight: bold; max-width: 100%; word-wrap: break-word;">
                 
                 <span class="nav-item">
                     <a class="nav-link" href="mailto:{{EMAIL}}" target="_blank">
@@ -73,7 +72,7 @@
                 </span>
                 <br />
                 <!--添加一个访问量-->
-                <span>
+                <span style="word-wrap: break-word; max-width: 100%; display: inline-block;">
                     本"<span style="color: rgb(13, 109, 252); font-weight: bold;"><a href="#">目录</a></span>"访问量 <span id="busuanzi_value_page_pv" style="color: rgb(13, 109, 252); font-weight: bold;"></span> 次 本站总访问量 <span id="busuanzi_value_site_pv" style="color: rgb(13, 109, 252); font-weight: bold;"></span>                次 本站总访客数 <span id="busuanzi_value_site_uv" style="color: rgb(13, 109, 252); font-weight: bold;"></span> 人
                 </span>
                 <br />
@@ -92,7 +91,7 @@
 
         <!--评论模块-->
 		<center>
-			<div class="giscus" id="giscus"></div> 
+			<div class="giscus" id="giscus" style="max-width: 100%; box-sizing: border-box;"></div> 
 		</center>
     </div>
 

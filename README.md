@@ -1,5 +1,5 @@
 # OpenList 主题模板
-
+,
 一个用于 OpenList 的美化主题模板，支持音乐播放器、评论系统、统计功能等。
 
 ## 功能特性
@@ -166,6 +166,12 @@ GISCUS_CATEGORY_ID: "your-category-id"
    ```html
    <!-- 先使用测试版本确认问题 -->
    fetch('https://cdn.jsdelivr.net/gh/your-username/OpenList-themes@main/themes/content-test.html')
+   ```
+   
+   **测试完成后切换回正式版本**：
+   ```html
+   <!-- 确认功能正常后，改回正式版本 -->
+   fetch('https://cdn.jsdelivr.net/gh/your-username/OpenList-themes@main/themes/content.html')
    ```
 
 2. **检查浏览器控制台**：
