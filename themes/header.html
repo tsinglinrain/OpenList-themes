@@ -1,0 +1,260 @@
+<!-- 感谢安稳 -->
+
+<!--Alist V3建议添加的，已经默认添加了，如果你的没有建议加上-->
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=String.prototype.replaceAll"></script>
+
+<!--引入字体，全局字体使用-->
+<link rel="stylesheet" href="https://npm.elemecdn.com/lxgw-wenkai-webfont@1.1.0/lxgwwenkai-regular.css" />
+
+<!--评论系统使用的js-->
+<script src="https://giscus.app/client.js"
+        data-repo="{{GISCUS_REPO}}"
+        data-repo-id="{{GISCUS_REPO_ID}}"
+        data-category="{{GISCUS_CATEGORY}}"
+        data-category-id="{{GISCUS_CATEGORY_ID}}"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<!--不蒜子计数器-->
+<script async src="https://busuanzi.icodeq.com/busuanzi.pure.mini.js"></script>
+
+<!-- Font6，自定义底部使用和看板娘使用的图标和字体文件-->
+<link type='text/css' rel="stylesheet" href="https://npm.elemecdn.com/font6pro@6.3.0/css/fontawesome.min.css" media='all'>
+<link href="https://npm.elemecdn.com/font6pro@6.3.0/css/all.min.css" rel="stylesheet">
+
+<!--音乐播放器所用的文件-->
+<!-- require APlayer -->
+<link rel="stylesheet" href="https://npm.elemecdn.com/aplayer@1.10.1/dist/APlayer.min.css">
+<script src="https://npm.elemecdn.com/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<!-- require MetingJS -->
+<script src="https://npm.elemecdn.com/meting2@0.0.1/js/Meting.min.js"></script>
+
+<!-- 个人部分设置 -->
+<!--防止被他人反代-->
+<script type="text/javascript">  
+if (document.domain != '{{DOMAIN}}'){  
+window.location.href='https://{{DOMAIN}}/';  
+}  
+</script>
+
+<script type="text/javascript">
+  if (top.location != self.location) {
+    top.location=self.location;
+}
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{GA_ID}}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '{{GA_ID}}');
+</script>
+
+<!--bing站长-->
+<meta name="msvalidate.01" content="{{BING_VERIFY}}" />
+
+<!--百度统计-->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?{{BAIDU_ANALYTICS}}";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<style>
+/* 去除通知栏 右上角 X */
+ .notify-render .hope-close-button {
+	display: none;
+}
+/*白天背景图*/
+.hope-ui-light{
+  background-image: url("{{DAY_BG}}") !important;
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-attachment:fixed;
+  background-position-x:center;
+}
+/*夜间背景图*/
+.hope-ui-dark {
+    background-image: url("{{NIGHT_BG}}") !important;
+    background-repeat:no-repeat;
+    background-size:cover;
+    background-attachment:fixed;
+    background-position-x:center;
+}
+/*主列表白天模式透明*/
+.obj-box.hope-stack.hope-c-dhzjXW.hope-c-PJLV.hope-c-PJLV-igScBhH-css {
+background-color: rgba(255, 255, 255, 0.8) !important;
+}
+/*主列表夜间模式透明*/
+.obj-box.hope-stack.hope-c-dhzjXW.hope-c-PJLV.hope-c-PJLV-iigjoxS-css {
+    background-color:rgb(0 0 0 / 50%) !important;
+}
+/*readme白天模式透明*/
+.hope-c-PJLV.hope-c-PJLV-ikSuVsl-css {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+}
+/*readme夜间模式透明, 50%这数值是控制透明度大小的*/
+.hope-c-PJLV.hope-c-PJLV-iiuDLME-css {
+background-color:rgb(0 0 0 / 50%) !important;
+}
+
+/*顶部右上角切换按钮透明*/
+.hope-ui-light .hope-c-ivMHWx-hZistB-cv.hope-icon-button {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+}
+.hope-ui-dark .hope-c-ivMHWx-hZistB-cv.hope-icon-button {
+    background-color:rgb(0 0 0 / 50%) !important;
+}
+
+/*右下角侧边栏按钮透明 第一个是白天 第二个是夜间*/
+.hope-ui-light .hope-c-PJLV-ijgzmFG-css {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+}
+.hope-ui-dark .hope-c-PJLV-ijgzmFG-css {
+    background-color:rgb(0 0 0 / 50%) !important;
+}
+
+/*白天模式代码块透明*/
+ .hope-ui-light pre {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+/*夜间模式代码块透明*/
+ .hope-ui-dark pre {
+    background-color: rgba(255, 255, 255, 0) !important;
+}
+
+/*左侧侧边栏目录*/
+/*白天模式*/
+.hope-ui-light .hope-c-PJLV-ieGWMbI-css {
+    background: rgba(255, 255, 255, 0.5) !important;
+}
+/*夜间模式*/
+ .hope-ui-dark .hope-c-PJLV-ieGWMbI-css {
+    background-color:rgb(0 0 0 / 50%) !important;
+}
+
+/* 返回顶部 */
+ .hope-c-PJLV-ihVEsOa-css {
+    background: rgba(255, 255, 255, 0.5) !important;
+}
+.hope-ui-dark .hope-c-PJLV-ihVEsOa-css {
+    background-color:rgb(0 0 0 / 50%) !important;
+}
+
+/*正常情况未使用吸附功能*/
+/*顶部*/
+ .hope-c-PJLV-ikaMhsQ-css {
+    background: rgba(255, 255, 255, 0) !important;
+}
+/*导航条*/ 
+/*白天模式*/
+ .hope-ui-light .hope-c-PJLV-idaeksS-css {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    border-radius: var(--hope-radii-xl) !important;
+}
+/*夜间模式*/
+ .hope-ui-dark .hope-c-PJLV-idaeksS-css {
+    background-color:rgb(0 0 0 / 50%) !important;
+    border-radius: var(--hope-radii-xl) !important;
+}
+/* 吸附到页面顶部 */
+/*顶部*/
+ .hope-c-PJLV-icWrYmg-css {
+    background: rgba(255, 255, 255, 0) !important;
+}
+/*导航条*/
+ .hope-c-PJLV-icKsjdm-css::after {
+    background: rgba(255, 255, 255, 0) !important;
+}
+/*白天模式*/
+ .hope-ui-light .hope-c-PJLV-icKsjdm-css {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    border-radius: var(--hope-radii-xl) !important;
+}
+/*夜间模式*/
+ .hope-ui-dark .hope-c-PJLV-icKsjdm-css {
+    background-color:rgb(0 0 0 / 50%) !important;
+    border-radius: var(--hope-radii-xl) !important;
+}
+
+/*仅吸附导航栏*/
+/*导航条*/
+ .hope-c-PJLV-ifdXShc-css::after {
+    background: rgba(255, 255, 255, 0) !important;
+}
+/*白天模式*/
+ .hope-ui-light .hope-c-hrsMRY {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    border-radius: var(--hope-radii-xl) !important;
+}
+/*夜间模式*/
+ .hope-ui-dark .hope-c-hrsMRY {
+    background-color:rgb(0 0 0 / 50%) !important;
+    border-radius: var(--hope-radii-xl) !important;
+}
+
+/*底部CSS，.App .table这三个一起的*/
+ dibu {
+    border-top: 0px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+.App {
+    min-height: 85vh;
+}
+.table {
+    margin: auto;
+}
+/*去掉底部*/
+.footer {
+    display: none !important;
+}
+
+/*全局字体*/
+ /* * {
+    font-family:LXGW WenKai
+}
+* {
+    font-weight:bold
+}
+body {
+  font-family: LXGW WenKai;
+} */
+
+/*以下为评论系统专用*/
+/*适配大小契合度*/
+.giscus{
+width: min(96%, 940px);
+flex-direction: column;
+ row-gap: var(--hope-space-2);
+ border-radius: var(--hope-radii-xl);
+ padding: var(--hope-space-2);
+ box-shadow: var(--hope-shadows-lg);
+}
+/*评论区 - 白天模式透明度*/
+.hope-ui-light .giscus{
+background-color: rgba(255, 255, 255, 0.8) !important;
+}
+/*评论区 - 夜间模式透明度*/
+.hope-ui-dark .giscus{
+background-color:rgb(0 0 0 / 80%) !important;
+}
+</style>
