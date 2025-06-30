@@ -238,10 +238,48 @@ A: 检查 `MUSIC_SERVER` 和 `PLAYLIST_ID` 是否正确，确认播放列表为�
 ### Q: 评论系统不显示？
 A: 检查 Giscus 配置是否正确，仓库是否为公开状态并启用了 Discussions。
 
-## 贡献
+## 故障排查工具
 
-欢迎提交 Issue 和 Pull Request！
+项目提供了多个版本的内容文件和诊断工具：
 
-## 许可证
+### 📋 内容文件说明
 
-Apache License 2.0
+| 文件 | 说明 | 使用场景 |
+|------|------|----------|
+| `content.html` | 标准版本，包含延迟加载 | 正常使用 |
+| `content-simple.html` | 简化版本，无延迟加载 | 调试延迟加载问题 |
+| `content-debug.html` | 基础诊断版本 | 查看加载日志 |
+| `content-enhanced-debug.html` | 增强诊断版本 | 实时监控组件状态 |
+| `content-test-locator.html` | 问题定位器 | 基础环境检测 |
+
+### 🔧 诊断脚本
+
+**控制台快速诊断：**
+1. 打开浏览器开发者工具（F12）
+2. 复制 `themes/diagnostic-script.js` 的内容
+3. 粘贴到控制台并回车运行
+4. 查看详细的诊断报告
+
+**或者直接运行：**
+```javascript
+// 在控制台中运行
+fetch('https://cdn.jsdelivr.net/gh/your-username/OpenList-themes@main/themes/diagnostic-script.js')
+  .then(r => r.text())
+  .then(code => eval(code));
+```
+
+### 🐛 常见问题排查
+
+1. **页面显示"🔄 检查..."不变**
+   - 使用 `content-test-locator.html` 检查基础环境
+   - 查看浏览器控制台是否有错误
+
+2. **依赖加载失败**
+   - 检查网络连接和CDN可访问性
+   - 尝试使用 `content-simple.html`
+
+3. **变量未替换**
+   - 确认配置脚本正确执行
+   - 使用诊断脚本检查变量替换状态
+
+## 快速使用

@@ -1,0 +1,481 @@
+<!-- OpenList 主题 - 增强诊断版本 -->
+<div id="openlist-theme-container">
+  <style>
+    .theme-status {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .status-title {
+      font-weight: bold;
+      color: #495057;
+      margin-bottom: 10px;
+      border-bottom: 2px solid #dee2e6;
+      padding-bottom: 5px;
+    }
+    .status-item {
+      display: inline-block;
+      margin: 5px 10px 5px 0;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .status-checking { background: #fff3cd; color: #856404; }
+    .status-success { background: #d4edda; color: #155724; }
+    .status-error { background: #f8d7da; color: #721c24; }
+    .music-player {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      color: white;
+      text-align: center;
+    }
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin: 15px 0;
+    }
+    .stat-item {
+      background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 20px;
+      margin: 5px;
+      font-size: 14px;
+    }
+    .debug-log {
+      background: #2d3748;
+      color: #e2e8f0;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin: 15px 0;
+    }
+    .log-entry {
+      margin: 2px 0;
+      padding: 2px 0;
+    }
+    .log-info { color: #63b3ed; }
+    .log-success { color: #68d391; }
+    .log-warning { color: #fbb862; }
+    .log-error { color: #fc8181; }
+    .init-attempts {
+      background: #e6fffa;
+      border-left: 4px solid #38b2ac;
+      padding: 10px;
+      margin: 10px 0;
+    }
+  </style>
+
+  <!-- 增强诊断状态区 -->
+  <div class="theme-status">
+    <div class="status-title">🔧 OpenList 主题增强诊断</div>
+    <div id="enhanced-status-display">
+      <span class="status-item status-checking">🔄 初始化检查...</span>
+    </div>
+    <div class="init-attempts">
+      <strong>初始化尝试:</strong> <span id="init-attempts-count">0</span> 次
+      <br><strong>最后尝试时间:</strong> <span id="last-attempt-time">未开始</span>
+    </div>
+  </div>
+
+  <!-- 调试日志区 -->
+  <div class="theme-status">
+    <div class="status-title">📋 实时调试日志</div>
+    <div id="debug-log-container" class="debug-log">
+      <div class="log-entry log-info">[INFO] 调试系统已启动</div>
+    </div>
+    <button onclick="clearDebugLog()" style="margin-top: 10px; padding: 5px 10px; background: #4299e1; color: white; border: none; border-radius: 4px;">清除日志</button>
+  </div>
+
+  <!-- 音乐播放器区域 -->
+  <div class="music-player">
+    <h4>🎵 音乐播放器测试：</h4>
+    <div id="meting-player-container">
+      <div id="music-player-placeholder" style="padding: 20px; background: rgba(255,255,255,0.1); border-radius: 8px; margin: 10px 0;">
+        等待音乐播放器加载...
+      </div>
+    </div>
+  </div>
+
+  <!-- 评论系统区域 -->
+  <div class="theme-status">
+    <div class="status-title">💬 评论系统测试：</div>
+    <div style="margin: 10px 0; color: #666;">
+      仓库: <code>{{GISCUS_REPO}}</code>
+      仓库ID: <code>{{GISCUS_REPO_ID}}</code>
+      分类: <code>{{GISCUS_CATEGORY}}</code>
+      分类ID: <code>{{GISCUS_CATEGORY_ID}}</code>
+    </div>
+    <div id="giscus-container">
+      <div id="giscus-placeholder" style="padding: 20px; background: #f8f9fa; border: 1px dashed #dee2e6; border-radius: 8px; text-align: center; color: #6c757d;">
+        评论系统加载中...
+      </div>
+    </div>
+  </div>
+
+  <!-- 统计信息区域 -->
+  <div class="theme-status">
+    <div class="status-title">📊 访问统计：</div>
+    <div class="stats-container">
+      <div class="stat-item">
+        本页面访问量 <span id="busuanzi_value_page_pv">-</span> 次
+      </div>
+      <div class="stat-item">
+        本站总访问量 <span id="busuanzi_value_site_pv">-</span> 次
+      </div>
+      <div class="stat-item">
+        本站总访客数 <span id="busuanzi_value_site_uv">-</span> 人
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+  
+  let initAttempts = 0;
+  let debugLogs = [];
+  let statusChecks = {
+    aplayer: false,
+    meting: false,
+    giscus: false,
+    busuanzi: false
+  };
+
+  // 增强日志函数
+  function addDebugLog(message, type = 'info') {
+    const timestamp = new Date().toLocaleTimeString();
+    const logEntry = `[${timestamp}] [${type.toUpperCase()}] ${message}`;
+    debugLogs.push({timestamp, type, message, entry: logEntry});
+    
+    // 更新页面显示
+    const container = document.getElementById('debug-log-container');
+    if (container) {
+      const logElement = document.createElement('div');
+      logElement.className = `log-entry log-${type}`;
+      logElement.textContent = logEntry;
+      container.appendChild(logElement);
+      container.scrollTop = container.scrollHeight;
+      
+      // 限制日志条数
+      if (container.children.length > 50) {
+        container.removeChild(container.firstChild);
+      }
+    }
+    
+    // 同时输出到控制台
+    console.log(`OpenList Debug: ${logEntry}`);
+  }
+
+  // 清除日志函数
+  window.clearDebugLog = function() {
+    debugLogs = [];
+    const container = document.getElementById('debug-log-container');
+    if (container) {
+      container.innerHTML = '<div class="log-entry log-info">[INFO] 日志已清除</div>';
+    }
+  };
+
+  // 更新状态显示
+  function updateStatusDisplay() {
+    const statusDisplay = document.getElementById('enhanced-status-display');
+    const attemptsCount = document.getElementById('init-attempts-count');
+    const lastAttemptTime = document.getElementById('last-attempt-time');
+    
+    if (attemptsCount) attemptsCount.textContent = initAttempts;
+    if (lastAttemptTime) lastAttemptTime.textContent = new Date().toLocaleString();
+    
+    if (!statusDisplay) return;
+    
+    let statusHTML = '';
+    const checks = [
+      {key: 'aplayer', name: 'APlayer', check: () => window.APlayer},
+      {key: 'meting', name: 'MetingJS', check: () => window.MetingJSPlugin || window.meting},
+      {key: 'giscus', name: 'Giscus', check: () => document.querySelector('.giscus') || document.querySelector('[data-giscus]')},
+      {key: 'busuanzi', name: '不蒜子统计', check: () => document.getElementById('busuanzi_value_site_pv') && document.getElementById('busuanzi_value_site_pv').textContent !== '-'}
+    ];
+    
+    checks.forEach(({key, name, check}) => {
+      try {
+        const isLoaded = check();
+        statusChecks[key] = !!isLoaded;
+        const status = isLoaded ? 'success' : 'checking';
+        const icon = isLoaded ? '✅' : '🔄';
+        statusHTML += `<span class="status-item status-${status}">${icon} ${name}${isLoaded ? '' : '...'}</span>`;
+        
+        if (isLoaded && !debugLogs.some(log => log.message.includes(`${name} 检测成功`))) {
+          addDebugLog(`${name} 检测成功`, 'success');
+        }
+      } catch (error) {
+        statusChecks[key] = false;
+        statusHTML += `<span class="status-item status-error">❌ ${name}</span>`;
+        addDebugLog(`${name} 检测错误: ${error.message}`, 'error');
+      }
+    });
+    
+    statusDisplay.innerHTML = statusHTML;
+  }
+
+  // 初始化音乐播放器
+  function initMusicPlayer() {
+    addDebugLog('开始初始化音乐播放器');
+    
+    if (window.APlayer && (window.MetingJSPlugin || window.meting)) {
+      try {
+        const container = document.getElementById('meting-player-container');
+        if (container && !container.querySelector('.aplayer')) {
+          const metingEl = document.createElement('meting-js');
+          metingEl.setAttribute('server', '{{MUSIC_SERVER}}' || 'netease');
+          metingEl.setAttribute('type', '{{MUSIC_TYPE}}' || 'playlist');
+          metingEl.setAttribute('id', '{{MUSIC_ID}}' || '2884035');
+          metingEl.setAttribute('theme', '{{MUSIC_THEME}}' || '#2980b9');
+          metingEl.setAttribute('auto', '{{MUSIC_AUTO}}' || 'https://api.injahow.cn/meting/');
+          metingEl.setAttribute('fixed', 'false');
+          metingEl.setAttribute('mini', 'false');
+          metingEl.setAttribute('list-folded', 'false');
+          metingEl.setAttribute('list-max-height', '300px');
+          
+          // 清除占位符
+          const placeholder = document.getElementById('music-player-placeholder');
+          if (placeholder) placeholder.remove();
+          
+          container.appendChild(metingEl);
+          addDebugLog('音乐播放器元素已创建', 'success');
+        }
+      } catch (error) {
+        addDebugLog(`音乐播放器初始化失败: ${error.message}`, 'error');
+      }
+    } else {
+      const missing = [];
+      if (!window.APlayer) missing.push('APlayer');
+      if (!window.MetingJSPlugin && !window.meting) missing.push('MetingJS');
+      addDebugLog(`音乐播放器依赖缺失: ${missing.join(', ')}`, 'warning');
+    }
+  }
+
+  // 初始化评论系统
+  function initGiscus() {
+    addDebugLog('开始初始化 Giscus 评论系统');
+    
+    // 检查变量是否已替换
+    const repo = '{{GISCUS_REPO}}';
+    const repoId = '{{GISCUS_REPO_ID}}';
+    const category = '{{GISCUS_CATEGORY}}';
+    const categoryId = '{{GISCUS_CATEGORY_ID}}';
+    
+    if (repo.includes('{{') || repoId.includes('{{')) {
+      addDebugLog('Giscus 配置变量未替换，跳过初始化', 'warning');
+      return;
+    }
+    
+    const container = document.getElementById('giscus-container');
+    if (!container || container.querySelector('.giscus')) {
+      addDebugLog('Giscus 容器不存在或已初始化', 'info');
+      return;
+    }
+    
+    try {
+      // 清除占位符
+      const placeholder = document.getElementById('giscus-placeholder');
+      if (placeholder) placeholder.remove();
+      
+      const script = document.createElement('script');
+      script.src = 'https://giscus.app/client.js';
+      script.setAttribute('data-repo', repo);
+      script.setAttribute('data-repo-id', repoId);
+      script.setAttribute('data-category', category);
+      script.setAttribute('data-category-id', categoryId);
+      script.setAttribute('data-mapping', 'pathname');
+      script.setAttribute('data-strict', '0');
+      script.setAttribute('data-reactions-enabled', '1');
+      script.setAttribute('data-emit-metadata', '0');
+      script.setAttribute('data-input-position', 'bottom');
+      script.setAttribute('data-theme', 'light');
+      script.setAttribute('data-lang', 'zh-CN');
+      script.crossOrigin = 'anonymous';
+      script.async = true;
+      
+      script.onload = () => addDebugLog('Giscus 脚本加载成功', 'success');
+      script.onerror = () => addDebugLog('Giscus 脚本加载失败', 'error');
+      
+      container.appendChild(script);
+      addDebugLog('Giscus 脚本已插入DOM', 'info');
+    } catch (error) {
+      addDebugLog(`Giscus 初始化失败: ${error.message}`, 'error');
+    }
+  }
+
+  // 主要初始化函数
+  function initializeComponents() {
+    initAttempts++;
+    addDebugLog(`第 ${initAttempts} 次初始化尝试`, 'info');
+    
+    // 更新状态显示
+    updateStatusDisplay();
+    
+    // 初始化各个组件
+    initMusicPlayer();
+    initGiscus();
+    
+    // 检查是否所有组件都已加载
+    const allLoaded = Object.values(statusChecks).every(status => status);
+    if (allLoaded) {
+      addDebugLog('所有组件初始化完成！', 'success');
+      return true;
+    }
+    
+    return false;
+  }
+
+  // 多重初始化策略
+  function startInitialization() {
+    addDebugLog('开始多重初始化策略', 'info');
+    
+    // 立即执行一次
+    setTimeout(() => {
+      if (!initializeComponents()) {
+        addDebugLog('立即初始化未完成，启动延迟重试', 'warning');
+      }
+    }, 100);
+    
+    // 延迟重试
+    const retryIntervals = [500, 1000, 2000, 3000, 5000];
+    retryIntervals.forEach((delay, index) => {
+      setTimeout(() => {
+        if (!Object.values(statusChecks).every(status => status)) {
+          addDebugLog(`延迟重试 ${index + 1} (${delay}ms)`, 'info');
+          initializeComponents();
+        }
+      }, delay);
+    });
+    
+    // 定期检查
+    const checkInterval = setInterval(() => {
+      updateStatusDisplay();
+      if (initAttempts < 10 && !Object.values(statusChecks).every(status => status)) {
+        initializeComponents();
+      }
+      if (initAttempts >= 10) {
+        clearInterval(checkInterval);
+        addDebugLog('达到最大重试次数，停止自动重试', 'warning');
+      }
+    }, 3000);
+  }
+
+  // 页面加载完成后启动
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startInitialization);
+  } else {
+    startInitialization();
+  }
+  
+  // 监听外部脚本加载
+  window.addEventListener('load', () => {
+    addDebugLog('页面完全加载完成', 'info');
+    setTimeout(initializeComponents, 1000);
+  });
+
+})();
+</script>
+
+<!-- 依赖加载脚本 -->
+<script>
+(function() {
+  'use strict';
+  
+  const cdnList = {
+    aplayer: [
+      'https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css',
+      'https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js'
+    ],
+    meting: [
+      'https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js',
+      'https://unpkg.com/meting@2/dist/Meting.min.js'
+    ],
+    busuanzi: [
+      'https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js',
+      'https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js'
+    ]
+  };
+
+  function loadResource(url, type = 'auto') {
+    return new Promise((resolve, reject) => {
+      let element;
+      
+      if (type === 'auto') {
+        type = url.endsWith('.css') ? 'css' : 'js';
+      }
+      
+      if (type === 'css') {
+        element = document.createElement('link');
+        element.rel = 'stylesheet';
+        element.href = url;
+      } else {
+        element = document.createElement('script');
+        element.src = url;
+        element.async = true;
+      }
+      
+      element.onload = () => {
+        console.log(`资源加载成功: ${url}`);
+        resolve(url);
+      };
+      element.onerror = () => {
+        console.error(`资源加载失败: ${url}`);
+        reject(new Error(`Failed to load ${url}`));
+      };
+      
+      document.head.appendChild(element);
+    });
+  }
+
+  async function loadWithFallback(urls) {
+    for (const url of urls) {
+      try {
+        await loadResource(url);
+        return url;
+      } catch (error) {
+        console.warn(`Fallback loading: ${error.message}`);
+        continue;
+      }
+    }
+    throw new Error(`All fallback URLs failed: ${urls.join(', ')}`);
+  }
+
+  // 加载所有依赖
+  async function loadAllDependencies() {
+    console.log('开始加载 OpenList 主题依赖...');
+    
+    try {
+      // 并行加载所有依赖
+      await Promise.all([
+        loadWithFallback(cdnList.aplayer),
+        loadWithFallback(cdnList.meting),
+        loadWithFallback(cdnList.busuanzi)
+      ]);
+      
+      console.log('所有依赖加载完成');
+      
+      // 触发初始化检查
+      if (window.initializeComponents) {
+        setTimeout(window.initializeComponents, 500);
+      }
+    } catch (error) {
+      console.error('依赖加载失败:', error);
+    }
+  }
+
+  // 开始加载
+  loadAllDependencies();
+})();
+</script>
