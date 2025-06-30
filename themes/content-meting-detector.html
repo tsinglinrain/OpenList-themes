@@ -1,0 +1,170 @@
+<!-- 超级简化测试版本 - 专门定位 MetingJS 问题 -->
+<div style="background: #f0f8ff; border: 2px solid #4169e1; padding: 20px; margin: 20px 0; border-radius: 10px;">
+  <h3 style="color: #4169e1; margin: 0 0 15px 0;">🔍 MetingJS 专项检测器</h3>
+  
+  <div id="test-results" style="background: white; padding: 15px; border-radius: 5px; margin: 10px 0;">
+    <p style="margin: 5px 0;"><strong>页面加载时间:</strong> <span id="load-time">检测中...</span></p>
+    <p style="margin: 5px 0;"><strong>APlayer 状态:</strong> <span id="aplayer-status">🔄 检测中</span></p>
+    <p style="margin: 5px 0;"><strong>MetingJS 检测:</strong> <span id="meting-status">🔄 检测中</span></p>
+    <p style="margin: 5px 0;"><strong>meting-js 元素:</strong> <span id="element-status">🔄 检测中</span></p>
+    <p style="margin: 5px 0;"><strong>音乐播放器界面:</strong> <span id="player-status">🔄 检测中</span></p>
+  </div>
+
+  <div style="background: #fff3cd; padding: 10px; border-radius: 5px; margin: 10px 0;">
+    <strong>详细信息:</strong>
+    <div id="detailed-info" style="font-family: monospace; font-size: 12px; margin: 5px 0; max-height: 200px; overflow-y: auto;">
+      正在收集信息...<br>
+    </div>
+  </div>
+
+  <div style="background: #d4edda; padding: 10px; border-radius: 5px; margin: 10px 0;">
+    <strong>全局对象检测:</strong>
+    <div id="global-objects" style="font-family: monospace; font-size: 12px; margin: 5px 0;">
+      检测中...<br>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+  
+  let startTime = Date.now();
+  
+  function log(message) {
+    const timestamp = new Date().toLocaleTimeString();
+    const detailedInfo = document.getElementById('detailed-info');
+    if (detailedInfo) {
+      detailedInfo.innerHTML += `[${timestamp}] ${message}<br>`;
+      detailedInfo.scrollTop = detailedInfo.scrollHeight;
+    }
+    console.log(`MetingJS检测器: [${timestamp}] ${message}`);
+  }
+  
+  function updateStatus(elementId, value, isSuccess = null) {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.textContent = value;
+      if (isSuccess === true) {
+        element.style.color = '#28a745';
+      } else if (isSuccess === false) {
+        element.style.color = '#dc3545';
+      } else {
+        element.style.color = '#ffc107';
+      }
+    }
+  }
+  
+  function detectMetingJS() {
+    log('开始 MetingJS 专项检测');
+    
+    // 1. 页面加载时间
+    const loadTime = Date.now() - startTime;
+    updateStatus('load-time', `${loadTime}ms`, loadTime < 5000);
+    
+    // 2. 检测 APlayer
+    if (window.APlayer) {
+      updateStatus('aplayer-status', '✅ APlayer 可用', true);
+      log(`APlayer 版本: ${window.APlayer.version || '未知'}`);
+    } else {
+      updateStatus('aplayer-status', '❌ APlayer 不可用', false);
+      log('APlayer 未找到');
+    }
+    
+    // 3. 详细检测 MetingJS 相关的全局对象
+    const globalObjects = document.getElementById('global-objects');
+    let globalInfo = '';
+    
+    const possibleMetingObjects = [
+      'MetingJSElement', 'MetingJSPlugin', 'MetingJS', 'meting', 'Meting',
+      'MetingElement', 'customElements'
+    ];
+    
+    possibleMetingObjects.forEach(objName => {
+      const obj = window[objName];
+      if (obj) {
+        globalInfo += `✅ ${objName}: ${typeof obj}<br>`;
+        log(`发现全局对象: ${objName} (${typeof obj})`);
+      } else {
+        globalInfo += `❌ ${objName}: 未定义<br>`;
+      }
+    });
+    
+    // 检查 customElements 注册情况
+    if (window.customElements) {
+      const metingJsDefined = customElements.get('meting-js');
+      if (metingJsDefined) {
+        globalInfo += `✅ meting-js 自定义元素已注册<br>`;
+        log('meting-js 自定义元素已注册');
+        updateStatus('meting-status', '✅ MetingJS 可用 (customElements)', true);
+      } else {
+        globalInfo += `❌ meting-js 自定义元素未注册<br>`;
+        log('meting-js 自定义元素未注册');
+        updateStatus('meting-status', '❌ MetingJS 不可用', false);
+      }
+    } else {
+      globalInfo += `❌ customElements API 不可用<br>`;
+      log('customElements API 不可用');
+      updateStatus('meting-status', '❌ 不支持 customElements', false);
+    }
+    
+    globalObjects.innerHTML = globalInfo;
+    
+    // 4. 检测 meting-js 元素
+    const metingElements = document.querySelectorAll('meting-js');
+    if (metingElements.length > 0) {
+      updateStatus('element-status', `✅ 找到 ${metingElements.length} 个元素`, true);
+      log(`找到 ${metingElements.length} 个 meting-js 元素`);
+      
+      // 检查每个元素的属性
+      metingElements.forEach((el, index) => {
+        const attrs = {
+          server: el.getAttribute('server'),
+          type: el.getAttribute('type'),
+          id: el.getAttribute('id'),
+          auto: el.getAttribute('auto')
+        };
+        log(`元素 ${index}: ${JSON.stringify(attrs)}`);
+      });
+    } else {
+      updateStatus('element-status', '❌ 未找到元素', false);
+      log('未找到 meting-js 元素');
+    }
+    
+    // 5. 检测音乐播放器界面
+    const aplayerElements = document.querySelectorAll('.aplayer');
+    if (aplayerElements.length > 0) {
+      updateStatus('player-status', `✅ 找到 ${aplayerElements.length} 个播放器`, true);
+      log(`找到 ${aplayerElements.length} 个 aplayer 界面`);
+      
+      // 检查播放器状态
+      aplayerElements.forEach((el, index) => {
+        const hasAudio = el.querySelector('audio');
+        const hasPlaylist = el.querySelector('.aplayer-list');
+        log(`播放器 ${index}: 音频=${!!hasAudio}, 播放列表=${!!hasPlaylist}`);
+      });
+    } else {
+      updateStatus('player-status', '❌ 未找到播放器界面', false);
+      log('未找到 aplayer 界面');
+    }
+  }
+  
+  // 立即执行一次
+  setTimeout(detectMetingJS, 100);
+  
+  // 1秒后再检查
+  setTimeout(() => {
+    log('1秒后重新检测');
+    detectMetingJS();
+  }, 1000);
+  
+  // 3秒后最后检查
+  setTimeout(() => {
+    log('3秒后最终检测');
+    detectMetingJS();
+    log('MetingJS 专项检测完成');
+  }, 3000);
+  
+  log('MetingJS 专项检测器已启动');
+})();
+</script>

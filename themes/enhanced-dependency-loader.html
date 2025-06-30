@@ -1,0 +1,174 @@
+<!-- OpenList 主题 - 改进的依赖加载脚本 -->
+<script>
+console.log('🚀 OpenList 主题依赖加载器启动');
+
+// 依赖加载函数
+function loadDependency(url, type = 'auto') {
+  return new Promise((resolve, reject) => {
+    let element;
+    
+    if (type === 'auto') {
+      type = url.endsWith('.css') ? 'css' : 'js';
+    }
+    
+    if (type === 'css') {
+      element = document.createElement('link');
+      element.rel = 'stylesheet';
+      element.href = url;
+    } else {
+      element = document.createElement('script');
+      element.src = url;
+      element.async = true;
+    }
+    
+    element.onload = () => {
+      console.log(`✅ 依赖加载成功: ${url}`);
+      resolve(url);
+    };
+    
+    element.onerror = () => {
+      console.error(`❌ 依赖加载失败: ${url}`);
+      reject(new Error(`Failed to load ${url}`));
+    };
+    
+    document.head.appendChild(element);
+  });
+}
+
+// 备用 CDN 列表
+const cdnOptions = {
+  aplayer: {
+    css: [
+      'https://npm.elemecdn.com/aplayer@1.10.1/dist/APlayer.min.css',
+      'https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css',
+      'https://unpkg.com/aplayer@1.10.1/dist/APlayer.min.css'
+    ],
+    js: [
+      'https://npm.elemecdn.com/aplayer@1.10.1/dist/APlayer.min.js',
+      'https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js',
+      'https://unpkg.com/aplayer@1.10.1/dist/APlayer.min.js'
+    ]
+  },
+  meting: [
+    'https://npm.elemecdn.com/meting2@0.0.1/js/Meting.min.js',
+    'https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js',
+    'https://unpkg.com/meting@2/dist/Meting.min.js',
+    'https://cdn.jsdelivr.net/gh/metowolf/MetingJS@1.2/dist/Meting.min.js'
+  ]
+};
+
+// 带重试的加载函数
+async function loadWithRetry(urls, maxRetries = 3) {
+  if (!Array.isArray(urls)) urls = [urls];
+  
+  for (const url of urls) {
+    for (let retry = 0; retry < maxRetries; retry++) {
+      try {
+        await loadDependency(url);
+        return url;
+      } catch (error) {
+        console.warn(`尝试 ${retry + 1}/${maxRetries} 加载 ${url} 失败`);
+        if (retry === maxRetries - 1) {
+          continue; // 尝试下一个 URL
+        }
+        // 等待一段时间再重试
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+  }
+  throw new Error(`所有 URL 都加载失败: ${urls.join(', ')}`);
+}
+
+// 检查依赖是否已加载
+function checkDependencyLoaded() {
+  const status = {
+    aplayer: !!window.APlayer,
+    meting: !!(window.MetingJSElement || window.MetingJSPlugin || window.meting || 
+              (window.customElements && window.customElements.get('meting-js')))
+  };
+  
+  console.log('依赖检查结果:', status);
+  return status;
+}
+
+// 主加载函数
+async function loadAllDependencies() {
+  try {
+    console.log('开始加载 OpenList 主题依赖...');
+    
+    // 检查是否已经加载
+    let status = checkDependencyLoaded();
+    
+    if (!status.aplayer) {
+      console.log('加载 APlayer...');
+      try {
+        await loadWithRetry(cdnOptions.aplayer.css);
+        await loadWithRetry(cdnOptions.aplayer.js);
+        console.log('✅ APlayer 加载完成');
+      } catch (error) {
+        console.error('❌ APlayer 加载失败:', error);
+      }
+    } else {
+      console.log('✅ APlayer 已存在');
+    }
+    
+    if (!status.meting) {
+      console.log('加载 MetingJS...');
+      try {
+        await loadWithRetry(cdnOptions.meting);
+        console.log('✅ MetingJS 加载完成');
+        
+        // 等待 MetingJS 初始化
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // 再次检查
+        status = checkDependencyLoaded();
+        if (status.meting) {
+          console.log('✅ MetingJS 验证通过');
+        } else {
+          console.warn('⚠️ MetingJS 加载后验证失败');
+        }
+      } catch (error) {
+        console.error('❌ MetingJS 加载失败:', error);
+      }
+    } else {
+      console.log('✅ MetingJS 已存在');
+    }
+    
+    // 最终状态检查
+    setTimeout(() => {
+      const finalStatus = checkDependencyLoaded();
+      console.log('🔍 最终依赖状态:', finalStatus);
+      
+      // 触发自定义事件，通知其他脚本依赖已加载
+      const event = new CustomEvent('openlistDependenciesLoaded', {
+        detail: finalStatus
+      });
+      document.dispatchEvent(event);
+    }, 2000);
+    
+  } catch (error) {
+    console.error('❌ 依赖加载过程出错:', error);
+  }
+}
+
+// 启动加载
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadAllDependencies);
+} else {
+  setTimeout(loadAllDependencies, 100);
+}
+
+// 页面完全加载后再检查一次
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const status = checkDependencyLoaded();
+    if (!status.aplayer || !status.meting) {
+      console.log('页面加载完成后重新尝试加载缺失的依赖');
+      loadAllDependencies();
+    }
+  }, 1000);
+});
+
+console.log('🎯 OpenList 主题依赖加载器已初始化');
+</script>
