@@ -8,6 +8,14 @@
         <div id="meting-status">🔄 检查 MetingJS...</div>
         <div id="giscus-status">🔄 检查 Giscus...</div>
         <div id="busuanzi-status">🔄 检查不蒜子统计...</div>
+        <div id="config-status" style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc;">
+            <strong>配置检查：</strong>
+            <div id="config-details" style="font-size: 11px; margin-top: 5px;"></div>
+        </div>
+        <div id="error-log" style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc; color: #d73a49; font-family: monospace; font-size: 11px; max-height: 150px; overflow-y: auto;">
+            <strong>错误日志：</strong>
+            <div id="error-messages"></div>
+        </div>
     </div>
 
 	<!--音乐播放器-->
@@ -130,18 +138,36 @@
 <script>
 console.log("🔧 OpenList主题诊断版本开始加载");
 
+// 错误日志收集
+const errorLog = [];
+
+function logError(message) {
+    errorLog.push(`${new Date().toLocaleTimeString()}: ${message}`);
+    console.error('❌ ' + message);
+    
+    // 更新页面上的错误显示
+    const errorDiv = document.getElementById('error-messages');
+    if (errorDiv) {
+        errorDiv.innerHTML = errorLog.map(err => `<div>${err}</div>`).join('');
+    }
+}
+
+function logInfo(message) {
+    console.log('ℹ️ ' + message);
+}
+
 // 手动初始化 Giscus 的函数
 function initializeGiscus(config) {
-    console.log('🔧 手动初始化 Giscus', config);
+    logInfo(`手动初始化 Giscus: ${JSON.stringify(config)}`);
     
     const giscusContainer = document.getElementById('giscus');
     if (!giscusContainer) {
-        console.log('❌ 未找到 Giscus 容器');
+        logError('未找到 Giscus 容器元素');
         return;
     }
     
     // 清空容器
-    giscusContainer.innerHTML = '';
+    giscusContainer.innerHTML = '<div style="text-align: center; color: #666; padding: 10px;">正在初始化评论系统...</div>';
     
     // 创建新的 script 元素来重新初始化 Giscus
     const script = document.createElement('script');
@@ -162,14 +188,23 @@ function initializeGiscus(config) {
     
     // 添加加载监听
     script.onload = () => {
-        console.log('✅ Giscus 重新加载成功');
+        logInfo('Giscus 重新加载成功');
         updateStatus('giscus-status', '✅', 'Giscus 手动初始化成功');
     };
     
-    script.onerror = () => {
-        console.log('❌ Giscus 重新加载失败');
+    script.onerror = (error) => {
+        logError(`Giscus 重新加载失败: ${error.message || 'Unknown error'}`);
         updateStatus('giscus-status', '❌', 'Giscus 手动初始化失败');
+        giscusContainer.innerHTML = '<div style="text-align: center; color: #f56565; padding: 20px;">❌ 评论系统加载失败，请检查网络连接和仓库配置</div>';
     };
+    
+    // 超时检查
+    setTimeout(() => {
+        if (giscusContainer.innerHTML.includes('正在初始化评论系统')) {
+            logError('Giscus 初始化超时（10秒）');
+            giscusContainer.innerHTML = '<div style="text-align: center; color: #f56565; padding: 20px;">⏰ 评论系统初始化超时</div>';
+        }
+    }, 10000);
     
     // 将 script 添加到 giscus 容器中
     giscusContainer.appendChild(script);
@@ -185,33 +220,67 @@ function updateStatus(elementId, status, message) {
 
 // 检查依赖
 function checkDependencies() {
+    logInfo('开始检查依赖...');
+    
+    // 检查配置变量替换情况
+    const configCheck = {
+        MUSIC_SERVER: '{{MUSIC_SERVER}}',
+        PLAYLIST_ID: '{{PLAYLIST_ID}}',
+        GISCUS_REPO: '{{GISCUS_REPO}}',
+        EMAIL: '{{EMAIL}}'
+    };
+    
+    const unresolved = Object.entries(configCheck).filter(([key, value]) => 
+        value.includes('{{') && value.includes('}}')
+    );
+    
+    const configDiv = document.getElementById('config-details');
+    if (configDiv) {
+        if (unresolved.length > 0) {
+            configDiv.innerHTML = `❌ 未替换的变量: ${unresolved.map(([k]) => k).join(', ')}`;
+            logError(`配置变量未替换: ${unresolved.map(([k, v]) => `${k}=${v}`).join(', ')}`);
+        } else {
+            configDiv.innerHTML = `✅ 所有配置变量已正确替换`;
+            logInfo('配置变量检查通过');
+        }
+    }
+
     // 检查 APlayer
     if (typeof APlayer !== 'undefined') {
         updateStatus('aplayer-status', '✅', 'APlayer 已加载');
-        console.log('✅ APlayer 可用');
+        logInfo('APlayer 可用');
     } else {
         updateStatus('aplayer-status', '❌', 'APlayer 未加载');
-        console.log('❌ APlayer 不可用');
+        logError('APlayer 库未加载，可能是 CDN 问题');
     }
 
     // 检查 MetingJS
     if (typeof MetingJSElement !== 'undefined' || document.querySelector('meting-js')) {
         const metingElements = document.querySelectorAll('meting-js');
         updateStatus('meting-status', '✅', `MetingJS 已加载 (找到 ${metingElements.length} 个元素)`);
-        console.log('✅ MetingJS 可用', metingElements);
+        logInfo(`MetingJS 可用，找到 ${metingElements.length} 个元素`);
         
         // 检查 meting-js 元素的状态
         metingElements.forEach((el, index) => {
-            console.log(`MetingJS 元素 ${index}:`, {
+            const elementInfo = {
                 server: el.getAttribute('server'),
                 type: el.getAttribute('type'),
                 id: el.getAttribute('id'),
                 hasPlayer: el.querySelector('.aplayer') !== null
-            });
+            };
+            logInfo(`MetingJS 元素 ${index}: ${JSON.stringify(elementInfo)}`);
+            
+            if (!elementInfo.hasPlayer) {
+                logError(`MetingJS 元素 ${index} 没有生成播放器界面`);
+            }
+            
+            if (elementInfo.server?.includes('{{') || elementInfo.id?.includes('{{')) {
+                logError(`MetingJS 元素 ${index} 包含未替换的配置变量`);
+            }
         });
     } else {
         updateStatus('meting-status', '❌', 'MetingJS 未加载');
-        console.log('❌ MetingJS 不可用');
+        logError('MetingJS 库未加载或元素未找到');
     }
 
     // 检查 Giscus
@@ -227,7 +296,7 @@ function checkDependencies() {
             category: giscusScript.getAttribute('data-category'),
             categoryId: giscusScript.getAttribute('data-category-id')
         };
-        console.log('Giscus 配置:', giscusConfig);
+        logInfo(`Giscus 配置: ${JSON.stringify(giscusConfig)}`);
         
         // 检查配置是否还有变量占位符
         const hasPlaceholders = Object.values(giscusConfig).some(val => 
@@ -236,8 +305,17 @@ function checkDependencies() {
         
         if (hasPlaceholders) {
             updateStatus('giscus-status', '⚠️', 'Giscus 配置中还有未替换的变量');
-            console.log('⚠️ Giscus 配置中发现未替换变量');
+            logError('Giscus 配置中发现未替换变量');
+            const unresolvedVars = Object.entries(giscusConfig)
+                .filter(([k, v]) => v && v.includes('{{'))
+                .map(([k, v]) => `${k}=${v}`);
+            logError(`未替换的 Giscus 变量: ${unresolvedVars.join(', ')}`);
+        } else if (!giscusConfig.repo || !giscusConfig.repoId) {
+            updateStatus('giscus-status', '❌', 'Giscus 配置不完整');
+            logError('Giscus 配置不完整，缺少必要参数');
         } else {
+            updateStatus('giscus-status', '✅', 'Giscus 脚本已加载，配置正确');
+            logInfo('Giscus 脚本存在且配置正确');
             // 手动初始化 Giscus
             setTimeout(() => {
                 initializeGiscus(giscusConfig);
@@ -245,15 +323,17 @@ function checkDependencies() {
         }
     } else {
         updateStatus('giscus-status', '❌', 'Giscus 脚本未找到');
-        console.log('❌ Giscus 脚本不存在');
+        logError('Giscus 脚本未找到，可能是 header.html 未正确加载');
     }
 
     // 检查不蒜子
     const pvElement = document.getElementById('busuanzi_value_page_pv');
-    if (pvElement && pvElement.textContent !== '0') {
-        updateStatus('busuanzi-status', '✅', '不蒜子统计正常');
+    if (pvElement && pvElement.textContent && pvElement.textContent !== '0') {
+        updateStatus('busuanzi-status', '✅', `不蒜子统计正常 (PV: ${pvElement.textContent})`);
+        logInfo('不蒜子统计正常');
     } else {
         updateStatus('busuanzi-status', '⚠️', '不蒜子统计未加载或为0');
+        logError('不蒜子统计可能被广告拦截器阻止，或者脚本加载失败');
     }
 }
 

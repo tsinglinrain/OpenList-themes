@@ -60,7 +60,23 @@ fetch('https://cdn.jsdelivr.net/gh/tsinglinrain/OpenList-themes@main/themes/head
 <div id="openlist-theme"></div>
 <script>
 // 使用相同的配置加载内容
-fetch('https://cdn.jsdelivr.net/gh/tsinglinrain/OpenList-themes@main/themes/content.html')
+fetch('https://cdn.jsdelivr.net/gh/tsinglinrain/OpenList-themes@main/themes/content-debug.html')
+  .then(r => r.text())
+  .then(content => {
+    Object.entries(themeConfig).forEach(([k, v]) => {
+      content = content.replaceAll(`{{${k}}}`, v);
+    });
+    document.getElementById('openlist-theme').innerHTML = content;
+  });
+</script>
+```
+
+**如果诊断正常，可以切换到正式版本：**
+```html
+<div id="openlist-theme"></div>
+<script>
+// 切换到正式版本
+fetch('https://cdn.jsdelivr.net/gh/tsinglinrain/OpenList-themes@main/themes/content-simple.html')
   .then(r => r.text())
   .then(content => {
     Object.entries(themeConfig).forEach(([k, v]) => {
