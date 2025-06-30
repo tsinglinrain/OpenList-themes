@@ -184,7 +184,60 @@
             console.log("🔧 3秒保险机制触发，强制显示内容");
             customizeDiv.style.display = "";
         }
+        
+        // 同时检查并修复 Giscus
+        setTimeout(() => {
+            const giscusDiv = document.getElementById('giscus');
+            if (giscusDiv && (!giscusDiv.children.length || giscusDiv.innerHTML.includes('评论系统加载中'))) {
+                console.log("🔧 Giscus 未正确加载，尝试修复");
+                initializeGiscusManually();
+            }
+        }, 1000);
     }, 3000);
+
+    // 手动初始化 Giscus
+    function initializeGiscusManually() {
+        const giscusContainer = document.getElementById('giscus');
+        if (!giscusContainer) return;
+        
+        const originalScript = document.querySelector('script[src*="giscus.app/client.js"]');
+        if (!originalScript) return;
+        
+        const config = {
+            repo: originalScript.getAttribute('data-repo'),
+            repoId: originalScript.getAttribute('data-repo-id'),
+            category: originalScript.getAttribute('data-category'),
+            categoryId: originalScript.getAttribute('data-category-id')
+        };
+        
+        console.log('🔧 手动修复 Giscus', config);
+        
+        if (!config.repo || config.repo.includes('{{')) {
+            console.log('❌ Giscus 配置无效');
+            return;
+        }
+        
+        giscusContainer.innerHTML = '';
+        
+        const script = document.createElement('script');
+        script.src = 'https://giscus.app/client.js';
+        script.setAttribute('data-repo', config.repo);
+        script.setAttribute('data-repo-id', config.repoId);
+        script.setAttribute('data-category', config.category);
+        script.setAttribute('data-category-id', config.categoryId);
+        script.setAttribute('data-mapping', 'pathname');
+        script.setAttribute('data-strict', '0');
+        script.setAttribute('data-reactions-enabled', '1');
+        script.setAttribute('data-emit-metadata', '0');
+        script.setAttribute('data-input-position', 'bottom');
+        script.setAttribute('data-theme', 'preferred_color_scheme');
+        script.setAttribute('data-lang', 'zh-CN');
+        script.crossOrigin = 'anonymous';
+        script.async = true;
+        
+        giscusContainer.appendChild(script);
+        console.log('✅ Giscus 修复完成');
+    }
 
     function removelrc() {
         //检测是否存在歌词按钮

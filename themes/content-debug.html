@@ -130,6 +130,51 @@
 <script>
 console.log("🔧 OpenList主题诊断版本开始加载");
 
+// 手动初始化 Giscus 的函数
+function initializeGiscus(config) {
+    console.log('🔧 手动初始化 Giscus', config);
+    
+    const giscusContainer = document.getElementById('giscus');
+    if (!giscusContainer) {
+        console.log('❌ 未找到 Giscus 容器');
+        return;
+    }
+    
+    // 清空容器
+    giscusContainer.innerHTML = '';
+    
+    // 创建新的 script 元素来重新初始化 Giscus
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    script.setAttribute('data-repo', config.repo);
+    script.setAttribute('data-repo-id', config.repoId);
+    script.setAttribute('data-category', config.category);
+    script.setAttribute('data-category-id', config.categoryId);
+    script.setAttribute('data-mapping', 'pathname');
+    script.setAttribute('data-strict', '0');
+    script.setAttribute('data-reactions-enabled', '1');
+    script.setAttribute('data-emit-metadata', '0');
+    script.setAttribute('data-input-position', 'bottom');
+    script.setAttribute('data-theme', 'preferred_color_scheme');
+    script.setAttribute('data-lang', 'zh-CN');
+    script.crossOrigin = 'anonymous';
+    script.async = true;
+    
+    // 添加加载监听
+    script.onload = () => {
+        console.log('✅ Giscus 重新加载成功');
+        updateStatus('giscus-status', '✅', 'Giscus 手动初始化成功');
+    };
+    
+    script.onerror = () => {
+        console.log('❌ Giscus 重新加载失败');
+        updateStatus('giscus-status', '❌', 'Giscus 手动初始化失败');
+    };
+    
+    // 将 script 添加到 giscus 容器中
+    giscusContainer.appendChild(script);
+}
+
 // 诊断函数
 function updateStatus(elementId, status, message) {
     const element = document.getElementById(elementId);
@@ -176,12 +221,28 @@ function checkDependencies() {
         console.log('✅ Giscus 脚本存在');
         
         // 检查 Giscus 配置
-        console.log('Giscus 配置:', {
+        const giscusConfig = {
             repo: giscusScript.getAttribute('data-repo'),
             repoId: giscusScript.getAttribute('data-repo-id'),
             category: giscusScript.getAttribute('data-category'),
             categoryId: giscusScript.getAttribute('data-category-id')
-        });
+        };
+        console.log('Giscus 配置:', giscusConfig);
+        
+        // 检查配置是否还有变量占位符
+        const hasPlaceholders = Object.values(giscusConfig).some(val => 
+            val && val.includes('{{') && val.includes('}}')
+        );
+        
+        if (hasPlaceholders) {
+            updateStatus('giscus-status', '⚠️', 'Giscus 配置中还有未替换的变量');
+            console.log('⚠️ Giscus 配置中发现未替换变量');
+        } else {
+            // 手动初始化 Giscus
+            setTimeout(() => {
+                initializeGiscus(giscusConfig);
+            }, 1000);
+        }
     } else {
         updateStatus('giscus-status', '❌', 'Giscus 脚本未找到');
         console.log('❌ Giscus 脚本不存在');
@@ -199,21 +260,43 @@ function checkDependencies() {
 // 立即检查一次
 setTimeout(checkDependencies, 1000);
 
-// 2秒后再检查一次
-setTimeout(checkDependencies, 2000);
+// 2秒后再检查一次  
+setTimeout(() => {
+    checkDependencies();
+    console.log('🔧 第二次依赖检查完成');
+}, 2000);
 
 // 5秒后最后检查一次
 setTimeout(() => {
     checkDependencies();
     console.log('🔧 诊断完成');
     
+    // 强制更新所有状态为最终结果
+    const statusElements = ['aplayer-status', 'meting-status', 'giscus-status', 'busuanzi-status'];
+    statusElements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element && element.innerHTML.includes('🔄')) {
+            updateStatus(id, '⚠️', '检查超时');
+        }
+    });
+    
     // 如果音乐播放器还是没有内容，尝试手动初始化
     const metingElements = document.querySelectorAll('meting-js');
     metingElements.forEach((el, index) => {
         if (!el.querySelector('.aplayer')) {
             console.log(`尝试手动初始化 MetingJS 元素 ${index}`);
-            // 触发自定义事件或重新设置属性
-            el.setAttribute('data-debug', 'true');
+            // 强制重新渲染
+            const server = el.getAttribute('server');
+            const type = el.getAttribute('type');
+            const id = el.getAttribute('id');
+            
+            // 重置属性触发重新渲染
+            el.setAttribute('server', 'temp');
+            setTimeout(() => {
+                el.setAttribute('server', server);
+                el.setAttribute('type', type);
+                el.setAttribute('id', id);
+            }, 100);
         }
     });
 }, 5000);

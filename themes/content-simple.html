@@ -149,7 +149,8 @@ function initializeComponents() {
     setTimeout(() => {
         const giscusDiv = document.getElementById('giscus');
         if (giscusDiv) {
-            const hasGiscusContent = giscusDiv.children.length > 0;
+            const hasGiscusContent = giscusDiv.children.length > 0 && 
+                                   !giscusDiv.innerHTML.includes('评论系统加载中');
             console.log('Giscus 状态:', {
                 element: !!giscusDiv,
                 hasContent: hasGiscusContent,
@@ -157,11 +158,73 @@ function initializeComponents() {
             });
             
             if (!hasGiscusContent) {
-                console.log('⚠️ Giscus 评论系统未正确加载');
-                giscusDiv.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">评论系统加载中，请稍候...</div>';
+                console.log('⚠️ Giscus 评论系统未正确加载，尝试手动初始化');
+                initializeGiscusManually();
             }
         }
     }, 3000);
+}
+
+// 手动初始化 Giscus
+function initializeGiscusManually() {
+    const giscusContainer = document.getElementById('giscus');
+    if (!giscusContainer) {
+        console.log('❌ 未找到 Giscus 容器');
+        return;
+    }
+    
+    // 从 header 中获取 Giscus 配置
+    const originalScript = document.querySelector('script[src*="giscus.app/client.js"]');
+    if (!originalScript) {
+        console.log('❌ 未找到原始 Giscus 脚本');
+        return;
+    }
+    
+    const config = {
+        repo: originalScript.getAttribute('data-repo'),
+        repoId: originalScript.getAttribute('data-repo-id'),
+        category: originalScript.getAttribute('data-category'),
+        categoryId: originalScript.getAttribute('data-category-id')
+    };
+    
+    console.log('🔧 手动初始化 Giscus', config);
+    
+    // 检查配置是否有效
+    if (!config.repo || config.repo.includes('{{')) {
+        console.log('❌ Giscus 配置无效或包含未替换变量');
+        giscusContainer.innerHTML = '<div style="text-align: center; color: #f56565; padding: 20px;">❌ 评论系统配置错误</div>';
+        return;
+    }
+    
+    // 清空容器并重新初始化
+    giscusContainer.innerHTML = '';
+    
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    script.setAttribute('data-repo', config.repo);
+    script.setAttribute('data-repo-id', config.repoId);
+    script.setAttribute('data-category', config.category);
+    script.setAttribute('data-category-id', config.categoryId);
+    script.setAttribute('data-mapping', 'pathname');
+    script.setAttribute('data-strict', '0');
+    script.setAttribute('data-reactions-enabled', '1');
+    script.setAttribute('data-emit-metadata', '0');
+    script.setAttribute('data-input-position', 'bottom');
+    script.setAttribute('data-theme', 'preferred_color_scheme');
+    script.setAttribute('data-lang', 'zh-CN');
+    script.crossOrigin = 'anonymous';
+    script.async = true;
+    
+    script.onload = () => {
+        console.log('✅ Giscus 手动初始化成功');
+    };
+    
+    script.onerror = () => {
+        console.log('❌ Giscus 手动初始化失败');
+        giscusContainer.innerHTML = '<div style="text-align: center; color: #f56565; padding: 20px;">❌ 评论系统加载失败</div>';
+    };
+    
+    giscusContainer.appendChild(script);
 }
 
 // 立即开始初始化
