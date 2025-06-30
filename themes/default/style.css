@@ -1,0 +1,217 @@
+/* OpenList Theme Styles */
+
+/* 基础设置 */
+/* 去除通知栏右上角 X */
+.notify-render .hope-close-button {
+    display: none;
+}
+
+/* 背景图片设置 */
+/* 白天背景图 */
+.hope-ui-light {
+    background-image: url("https://tsinglin.notion.site/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F5eda9ae8-c691-4271-8f88-0c57fcfb9dc2%2FF84B435A-C598-4A1E-A337-59AC124F9B14.jpeg?table=block&id=e35ff004-a6ba-4905-b73e-86991c7d35ca&spaceId=adc8bfab-c051-446a-957c-9cd49088f87e&width=1440&userId=&cache=v2") !important;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position-x: center;
+}
+
+/* 夜间背景图 */
+.hope-ui-dark {
+    background-image: url("https://tsinglin.notion.site/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F5eda9ae8-c691-4271-8f88-0c57fcfb9dc2%2FF84B435A-C598-4A1E-A337-59AC124F9B14.jpeg?table=block&id=e35ff004-a6ba-4905-b73e-86991c7d35ca&spaceId=adc8bfab-c051-446a-957c-9cd49088f87e&width=1440&userId=&cache=v2") !important;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position-x: center;
+}
+
+/* 透明度设置 */
+/* 主列表白天模式透明 */
+.obj-box.hope-stack.hope-c-dhzjXW.hope-c-PJLV.hope-c-PJLV-igScBhH-css {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* 主列表夜间模式透明 */
+.obj-box.hope-stack.hope-c-dhzjXW.hope-c-PJLV.hope-c-PJLV-iigjoxS-css {
+    background-color: rgb(0 0 0 / 50%) !important;
+}
+
+/* README白天模式透明 */
+.hope-c-PJLV.hope-c-PJLV-ikSuVsl-css {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* README夜间模式透明 */
+.hope-c-PJLV.hope-c-PJLV-iiuDLME-css {
+    background-color: rgb(0 0 0 / 50%) !important;
+}
+
+/* 顶部右上角切换按钮透明 */
+.hope-ui-light .hope-c-ivMHWx-hZistB-cv.hope-icon-button {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.hope-ui-dark .hope-c-ivMHWx-hZistB-cv.hope-icon-button {
+    background-color: rgb(0 0 0 / 50%) !important;
+}
+
+/* 右下角侧边栏按钮透明 */
+.hope-ui-light .hope-c-PJLV-ijgzmFG-css {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.hope-ui-dark .hope-c-PJLV-ijgzmFG-css {
+    background-color: rgb(0 0 0 / 50%) !important;
+}
+
+/* 代码块透明 */
+.hope-ui-light pre {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.hope-ui-dark pre {
+    background-color: rgba(255, 255, 255, 0) !important;
+}
+
+/* 左侧侧边栏目录 */
+.hope-ui-light .hope-c-PJLV-ieGWMbI-css {
+    background: rgba(255, 255, 255, 0.5) !important;
+}
+
+.hope-ui-dark .hope-c-PJLV-ieGWMbI-css {
+    background-color: rgb(0 0 0 / 50%) !important;
+}
+
+/* 返回顶部按钮 */
+.hope-c-PJLV-ihVEsOa-css {
+    background: rgba(255, 255, 255, 0.5) !important;
+}
+
+.hope-ui-dark .hope-c-PJLV-ihVEsOa-css {
+    background-color: rgb(0 0 0 / 50%) !important;
+}
+
+/* 导航栏样式 */
+/* 正常情况未使用吸附功能 */
+.hope-c-PJLV-ikaMhsQ-css {
+    background: rgba(255, 255, 255, 0) !important;
+}
+
+/* 导航条白天模式 */
+.hope-ui-light .hope-c-PJLV-idaeksS-css {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    border-radius: var(--hope-radii-xl) !important;
+}
+
+/* 导航条夜间模式 */
+.hope-ui-dark .hope-c-PJLV-idaeksS-css {
+    background-color: rgb(0 0 0 / 50%) !important;
+    border-radius: var(--hope-radii-xl) !important;
+}
+
+/* 吸附到页面顶部 */
+.hope-c-PJLV-icWrYmg-css {
+    background: rgba(255, 255, 255, 0) !important;
+}
+
+.hope-c-PJLV-icKsjdm-css::after {
+    background: rgba(255, 255, 255, 0) !important;
+}
+
+.hope-ui-light .hope-c-PJLV-icKsjdm-css {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    border-radius: var(--hope-radii-xl) !important;
+}
+
+.hope-ui-dark .hope-c-PJLV-icKsjdm-css {
+    background-color: rgb(0 0 0 / 50%) !important;
+    border-radius: var(--hope-radii-xl) !important;
+}
+
+/* 仅吸附导航栏 */
+.hope-c-PJLV-ifdXShc-css::after {
+    background: rgba(255, 255, 255, 0) !important;
+}
+
+.hope-ui-light .hope-c-hrsMRY {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    border-radius: var(--hope-radii-xl) !important;
+}
+
+.hope-ui-dark .hope-c-hrsMRY {
+    background-color: rgb(0 0 0 / 50%) !important;
+    border-radius: var(--hope-radii-xl) !important;
+}
+
+/* 底部样式 */
+.dibu {
+    border-top: 0px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.App {
+    min-height: 85vh;
+}
+
+.table {
+    margin: auto;
+}
+
+/* 去掉原版底部 */
+.footer {
+    display: none !important;
+}
+
+/* 评论系统样式 */
+.giscus {
+    width: min(96%, 940px);
+    flex-direction: column;
+    row-gap: var(--hope-space-2);
+    border-radius: var(--hope-radii-xl);
+    padding: var(--hope-space-2);
+    box-shadow: var(--hope-shadows-lg);
+}
+
+/* 评论区白天模式透明度 */
+.hope-ui-light .giscus {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* 评论区夜间模式透明度 */
+.hope-ui-dark .giscus {
+    background-color: rgb(0 0 0 / 80%) !important;
+}
+
+/* 导航链接样式 */
+.nav-item .nav-link {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+.nav-item .nav-link:hover {
+    color: #409EFF;
+    transform: translateY(-1px);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .dibu {
+        position: relative;
+        padding: 20px;
+    }
+    
+    .giscus {
+        width: 95%;
+        margin: 0 auto;
+    }
+    
+    .nav-item {
+        display: block;
+        margin: 5px 0;
+    }
+}
