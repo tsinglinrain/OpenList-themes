@@ -94,7 +94,46 @@
 
         <!-- 评论模块 -->
         <center>
-            <div class="giscus" id="giscus"></div> 
+            <div class="giscus-container">
+                <div class="giscus" id="giscus"></div>
+            </div>
         </center>
+        
+        <script>
+        // 确保Giscus评论系统正确初始化
+        (function() {
+            function initGiscusComments() {
+                const giscusContainer = document.getElementById('giscus');
+                if (giscusContainer && !giscusContainer.querySelector('iframe')) {
+                    const script = document.createElement('script');
+                    script.src = 'https://giscus.app/client.js';
+                    script.setAttribute('data-repo', 'tsinglinrain/notionext_comment');
+                    script.setAttribute('data-repo-id', 'R_kgDOJHNMGA');
+                    script.setAttribute('data-category', 'Announcements');
+                    script.setAttribute('data-category-id', 'DIC_kwDOJHNMGM4CUvzD');
+                    script.setAttribute('data-mapping', 'pathname');
+                    script.setAttribute('data-strict', '0');
+                    script.setAttribute('data-reactions-enabled', '1');
+                    script.setAttribute('data-emit-metadata', '0');
+                    script.setAttribute('data-input-position', 'bottom');
+                    script.setAttribute('data-theme', document.documentElement.classList.contains('hope-ui-dark') ? 'dark' : 'light');
+                    script.setAttribute('data-lang', 'zh-CN');
+                    script.setAttribute('crossorigin', 'anonymous');
+                    script.async = true;
+                    
+                    giscusContainer.appendChild(script);
+                }
+            }
+            
+            // 延迟初始化，确保DOM加载完成
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(initGiscusComments, 1000);
+                });
+            } else {
+                setTimeout(initGiscusComments, 1000);
+            }
+        })();
+        </script>
     </div>
 </div>

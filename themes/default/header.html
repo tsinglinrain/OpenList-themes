@@ -34,6 +34,49 @@
 <!-- 不蒜子计数器 -->
 <script async src="https://busuanzi.icodeq.com/busuanzi.pure.mini.js"></script>
 
+<!-- 确保依赖正确加载的初始化脚本 -->
+<script>
+(function() {
+    // 确保APlayer和Meting正确加载
+    function ensureMusicPlayerLoaded() {
+        if (typeof APlayer === 'undefined' || typeof MetingJSElement === 'undefined') {
+            console.log('正在重新加载音乐播放器依赖...');
+            
+            // 重新加载APlayer
+            if (typeof APlayer === 'undefined') {
+                const aplayerScript = document.createElement('script');
+                aplayerScript.src = 'https://npm.elemecdn.com/aplayer@1.10.1/dist/APlayer.min.js';
+                aplayerScript.onload = function() {
+                    console.log('APlayer loaded successfully');
+                    checkMetingJS();
+                };
+                document.head.appendChild(aplayerScript);
+            } else {
+                checkMetingJS();
+            }
+            
+            function checkMetingJS() {
+                if (typeof MetingJSElement === 'undefined') {
+                    const metingScript = document.createElement('script');
+                    metingScript.src = 'https://npm.elemecdn.com/meting2@0.0.1/js/Meting.min.js';
+                    metingScript.onload = function() {
+                        console.log('MetingJS loaded successfully');
+                    };
+                    document.head.appendChild(metingScript);
+                }
+            }
+        }
+    }
+    
+    // 页面加载完成后检查依赖
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', ensureMusicPlayerLoaded);
+    } else {
+        ensureMusicPlayerLoaded();
+    }
+})();
+</script>
+
 <!-- 安全防护脚本 -->
 <script type="text/javascript">  
 if (document.domain != 'soyet.icu'){  

@@ -6,10 +6,20 @@
     // 延迟加载自定义内容
     function initCustomContent() {
         let interval = setInterval(() => {
-            if (document.querySelector(".footer")) {
+            if (document.querySelector(".footer") || document.querySelector("#mount")) {
                 const customizeDiv = document.querySelector("#customize");
                 if (customizeDiv) {
                     customizeDiv.style.display = "";
+                    
+                    // 初始化音乐播放器
+                    setTimeout(() => {
+                        initMusicPlayer();
+                    }, 500);
+                    
+                    // 初始化评论系统
+                    setTimeout(() => {
+                        initGiscus();
+                    }, 1000);
                 }
                 clearInterval(interval);
             }
@@ -20,9 +30,63 @@
             const customizeDiv = document.querySelector("#customize");
             if (customizeDiv) {
                 customizeDiv.style.display = "";
+                initMusicPlayer();
+                initGiscus();
             }
             clearInterval(interval);
         }, 5000);
+    }
+
+    // 初始化音乐播放器
+    function initMusicPlayer() {
+        const metingJs = document.querySelector('meting-js');
+        if (metingJs && typeof MetingJSElement !== 'undefined') {
+            // 确保音乐播放器正确渲染
+            metingJs.style.display = 'block';
+            metingJs.style.position = 'fixed';
+            metingJs.style.bottom = '0';
+            metingJs.style.left = '0';
+            metingJs.style.zIndex = '9999';
+            
+            // 重新触发MetingJS初始化
+            if (metingJs.aplayer) {
+                metingJs.aplayer.destroy();
+            }
+            setTimeout(() => {
+                if (window.APlayer && window.MetingJSElement) {
+                    new window.MetingJSElement();
+                }
+            }, 100);
+        }
+    }
+
+    // 初始化Giscus评论系统
+    function initGiscus() {
+        const giscusContainer = document.querySelector('#giscus');
+        if (giscusContainer && !giscusContainer.querySelector('iframe')) {
+            // 检查是否已经有giscus脚本
+            const existingScript = document.querySelector('script[src*="giscus.app"]');
+            if (existingScript) {
+                // 重新配置giscus
+                const script = document.createElement('script');
+                script.src = 'https://giscus.app/client.js';
+                script.setAttribute('data-repo', 'tsinglinrain/notionext_comment');
+                script.setAttribute('data-repo-id', 'R_kgDOJHNMGA');
+                script.setAttribute('data-category', 'Announcements');
+                script.setAttribute('data-category-id', 'DIC_kwDOJHNMGM4CUvzD');
+                script.setAttribute('data-mapping', 'pathname');
+                script.setAttribute('data-strict', '0');
+                script.setAttribute('data-reactions-enabled', '1');
+                script.setAttribute('data-emit-metadata', '0');
+                script.setAttribute('data-input-position', 'bottom');
+                script.setAttribute('data-theme', 'preferred_color_scheme');
+                script.setAttribute('data-lang', 'zh-CN');
+                script.setAttribute('crossorigin', 'anonymous');
+                script.async = true;
+                
+                giscusContainer.appendChild(script);
+            }
+        }
     }
 
     // 移除音乐播放器歌词功能

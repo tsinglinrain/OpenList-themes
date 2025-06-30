@@ -22,7 +22,7 @@
 <!-- OpenList主题一键安装 -->
 <script>
 (function() {
-    const THEME_BASE = 'https://cdn.jsdelivr.net/gh/yourusername/openlist-themes@main/themes/default';
+    const THEME_BASE = 'https://cdn.jsdelivr.net/gh/tsinglinrain/openlist-themes@main/themes/default';
     
     // 加载CSS
     const link = document.createElement('link');
@@ -48,6 +48,17 @@
                 const container = document.createElement('div');
                 container.innerHTML = html;
                 document.body.appendChild(container);
+                
+                // 确保自定义内容正确显示
+                setTimeout(() => {
+                    const customizeDiv = document.querySelector('#customize');
+                    if (customizeDiv) {
+                        customizeDiv.style.display = 'block';
+                    }
+                }, 1000);
+            });
+    });
+})();
             });
     });
 })();
