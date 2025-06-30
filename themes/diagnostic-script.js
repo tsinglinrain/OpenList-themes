@@ -42,8 +42,7 @@
       {name: 'jQuery', check: () => window.jQuery || window.$},
       {name: 'APlayer', check: () => window.APlayer},
       {name: 'MetingJS', check: () => window.MetingJSPlugin || window.meting},
-      {name: 'Giscus', check: () => document.querySelector('.giscus') || document.querySelector('[data-giscus]')},
-      {name: '不蒜子统计', check: () => document.getElementById('busuanzi_value_site_pv')}
+      {name: 'Giscus', check: () => document.querySelector('.giscus') || document.querySelector('[data-giscus]')}
     ];
     
     deps.forEach(({name, check}) => {
@@ -70,10 +69,7 @@
       'debug-log-container',
       'test-results',
       'meting-player-container',
-      'giscus-container',
-      'busuanzi_value_site_pv',
-      'busuanzi_value_site_uv',
-      'busuanzi_value_page_pv'
+      'giscus-container'
     ];
     
     elements.forEach(id => {
@@ -140,11 +136,6 @@
     const giscusElements = document.querySelectorAll('.giscus, [data-giscus]');
     console.log(`  评论系统元素: ${giscusElements.length} 个`);
     
-    // 测试统计
-    const pv = document.getElementById('busuanzi_value_site_pv');
-    const uv = document.getElementById('busuanzi_value_site_uv');
-    console.log(`  访问统计: PV=${pv ? pv.textContent : '无'}, UV=${uv ? uv.textContent : '无'}`);
-    
     console.log('');
   }
   
@@ -198,8 +189,7 @@ window.testOpenListTheme = function() {
   // 尝试手动加载依赖
   const deps = [
     'https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js',
-    'https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js',
-    'https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js'
+    'https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js'
   ];
   
   deps.forEach(url => {

@@ -7,7 +7,6 @@
         <div id="aplayer-status">🔄 检查 APlayer...</div>
         <div id="meting-status">🔄 检查 MetingJS...</div>
         <div id="giscus-status">🔄 检查 Giscus...</div>
-        <div id="busuanzi-status">🔄 检查不蒜子统计...</div>
         <div id="config-status" style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc;">
             <strong>配置检查：</strong>
             <div id="config-details" style="font-size: 11px; margin-top: 5px;"></div>
@@ -94,11 +93,6 @@
                     </i>
                     Openlist
                 </a>
-            </span>
-            <br />
-            <!--添加一个访问量-->
-            <span style="word-wrap: break-word; max-width: 100%; display: inline-block;">
-                本"<span style="color: rgb(13, 109, 252); font-weight: bold;"><a href="#">目录</a></span>"访问量 <span id="busuanzi_value_page_pv" style="color: rgb(13, 109, 252); font-weight: bold;">0</span> 次 本站总访问量 <span id="busuanzi_value_site_pv" style="color: rgb(13, 109, 252); font-weight: bold;">0</span> 次 本站总访客数 <span id="busuanzi_value_site_uv" style="color: rgb(13, 109, 252); font-weight: bold;">0</span> 人
             </span>
             <br />
             <!--添加备案信息-->
@@ -325,16 +319,6 @@ function checkDependencies() {
         updateStatus('giscus-status', '❌', 'Giscus 脚本未找到');
         logError('Giscus 脚本未找到，可能是 header.html 未正确加载');
     }
-
-    // 检查不蒜子
-    const pvElement = document.getElementById('busuanzi_value_page_pv');
-    if (pvElement && pvElement.textContent && pvElement.textContent !== '0') {
-        updateStatus('busuanzi-status', '✅', `不蒜子统计正常 (PV: ${pvElement.textContent})`);
-        logInfo('不蒜子统计正常');
-    } else {
-        updateStatus('busuanzi-status', '⚠️', '不蒜子统计未加载或为0');
-        logError('不蒜子统计可能被广告拦截器阻止，或者脚本加载失败');
-    }
 }
 
 // 立即检查一次
@@ -352,7 +336,7 @@ setTimeout(() => {
     console.log('🔧 诊断完成');
     
     // 强制更新所有状态为最终结果
-    const statusElements = ['aplayer-status', 'meting-status', 'giscus-status', 'busuanzi-status'];
+    const statusElements = ['aplayer-status', 'meting-status', 'giscus-status'];
     statusElements.forEach(id => {
         const element = document.getElementById(id);
         if (element && element.innerHTML.includes('🔄')) {

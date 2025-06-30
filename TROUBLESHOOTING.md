@@ -87,8 +87,8 @@
 // 手动测试依赖加载
 const testUrls = [
   'https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js',
-  'https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js',
-  'https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js'
+  'https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js'
+  // 注意：不蒜子统计服务已移除，因为服务不稳定
 ];
 
 testUrls.forEach(url => {

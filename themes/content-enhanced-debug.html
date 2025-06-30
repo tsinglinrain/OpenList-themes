@@ -127,13 +127,10 @@
     <div class="status-title">📊 访问统计：</div>
     <div class="stats-container">
       <div class="stat-item">
-        本页面访问量 <span id="busuanzi_value_page_pv">-</span> 次
+        使用 Google Analytics 或百度统计替代不蒜子
       </div>
-      <div class="stat-item">
-        本站总访问量 <span id="busuanzi_value_site_pv">-</span> 次
-      </div>
-      <div class="stat-item">
-        本站总访客数 <span id="busuanzi_value_site_uv">-</span> 人
+      <div class="stat-item" style="background: linear-gradient(45deg, #28a745, #20c997);">
+        统计功能已优化
       </div>
     </div>
   </div>
@@ -148,8 +145,7 @@
   let statusChecks = {
     aplayer: false,
     meting: false,
-    giscus: false,
-    busuanzi: false
+    giscus: false
   };
 
   // 增强日志函数
@@ -201,8 +197,7 @@
     const checks = [
       {key: 'aplayer', name: 'APlayer', check: () => window.APlayer},
       {key: 'meting', name: 'MetingJS', check: () => window.MetingJSPlugin || window.meting},
-      {key: 'giscus', name: 'Giscus', check: () => document.querySelector('.giscus') || document.querySelector('[data-giscus]')},
-      {key: 'busuanzi', name: '不蒜子统计', check: () => document.getElementById('busuanzi_value_site_pv') && document.getElementById('busuanzi_value_site_pv').textContent !== '-'}
+      {key: 'giscus', name: 'Giscus', check: () => document.querySelector('.giscus') || document.querySelector('[data-giscus]')}
     ];
     
     checks.forEach(({key, name, check}) => {
@@ -401,10 +396,6 @@
     meting: [
       'https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js',
       'https://unpkg.com/meting@2/dist/Meting.min.js'
-    ],
-    busuanzi: [
-      'https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js',
-      'https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js'
     ]
   };
 
@@ -460,8 +451,7 @@
       // 并行加载所有依赖
       await Promise.all([
         loadWithFallback(cdnList.aplayer),
-        loadWithFallback(cdnList.meting),
-        loadWithFallback(cdnList.busuanzi)
+        loadWithFallback(cdnList.meting)
       ]);
       
       console.log('所有依赖加载完成');
